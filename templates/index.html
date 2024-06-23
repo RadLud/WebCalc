@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calculator</title>
+</head>
+<style>
+    button {
+        * {
+    box-sizing: border-box;
+}
+        width: 50px; /* Adjust width as needed */
+        height: 50px; /* Adjust height as needed */
+        font-size: 20px; /* Adjust font size as needed */
+        margin: 5px; /* Adds space between buttons */
+        border: 1px solid rgb(58, 58, 58);
+        border-radius: 3px;
+    }
+    input[type="text"] {
+        height: 50px; 
+        width: 240px; /* Adjust based on parent container's width */
+        font-size: 24px; /* Adjust font size as needed */
+        margin: 5px 0 5px 5px; /* Adds space around the input field */
+        padding: 0;
+        border: 1px solid rgb(58, 58, 58);
+        border-radius: 3px; /* Adjust this value to control the roundness of the edges */
+    }
+    
+    #equal-sign {
+        width: 242px; /* 4 times the width of other buttons plus border */
+    }
+</style>
+<script>
+    function appendSign(event, sign) {
+        event.preventDefault(); // Prevent the default action of the event
+        var input = document.forms[0].expression;
+        var lastChar = input.value.slice(-1);
+        var signs = ['+', '-', '*', '/'];
+        // Allow appending if input is empty or last character is not a sign
+        if (input.value === '' || !signs.includes(lastChar)) {
+            input.value += sign;
+        }
+    }
+    function validateExpression(event) {
+    var expression = document.forms[0].expression.value;
+    if (expression.length === 0) {
+        alert("The expression cannot be empty.");
+        event.preventDefault();
+        return false;
+    }
+    if (!isParenthesesBalanced(expression)) {
+        alert("The parentheses are not balanced.");
+        event.preventDefault();
+        return false;
+    }
+    if (/[\+\-\*\/]{2,}/.test(expression)) {
+        alert("Consecutive operators are not allowed.");
+        event.preventDefault();
+        return false;
+    }
+    if (/[\+\-\*\/]$/.test(expression)) {
+        alert("The expression cannot end with an operator.");
+        event.preventDefault();
+        return false;
+    }
+    
+    return true; // Only allows form submission if all checks pass
+}
+
+function isParenthesesBalanced(expression) {
+    var balance = 0;
+    for (var i = 0; i < expression.length; i++) {
+        if (expression[i] === '(') balance++;
+        if (expression[i] === ')') balance--;
+        if (balance < 0) return false; // Closing parentheses without a matching opening
+    }
+    return balance === 0;
+}
+</script>
+
+<body>
+    <form method="POST" action="/" onsubmit="return validateExpression(event)">
+        <input type="text" name="expression" value="{{ result | default('') }}" />
+        <div>
+            <button type="button" onclick="event.preventDefault(); document.forms[0].expression.value  += '1'">1</button>
+            <button type="button" onclick="event.preventDefault(); document.forms[0].expression.value  += '2'">2</button>
+            <button type="button" onclick="event.preventDefault(); document.forms[0].expression.value  += '3'">3</button>
+            
+            <button type="button" onclick="appendSign(event, '+')">+</button>
+        </div>
+        <div>
+            <button type="button" onclick="event.preventDefault(); document.forms[0].expression.value  += '4'">4</button>
+            <button type="button" onclick="event.preventDefault(); document.forms[0].expression.value  += '5'">5</button>
+            <button type="button" onclick="event.preventDefault(); document.forms[0].expression.value  += '6'">6</button>
+            <button type="button" onclick="appendSign(event, '-')">-</button>
+        </div>
+        <div>
+            <button type="button" onclick="event.preventDefault(); document.forms[0].expression.value  += '7'">7</button>
+            <button type="button" onclick="event.preventDefault(); document.forms[0].expression.value  += '8'">8</button>
+            <button type="button" onclick="event.preventDefault(); document.forms[0].expression.value  += '9'">9</button>
+            <button type="button" onclick="appendSign(event, '*')">*</button>
+        </div>
+        <div>
+            <button type="button" onclick="event.preventDefault(); document.forms[0].expression.value  = ''">C</button>
+            <button type="button" onclick="event.preventDefault(); document.forms[0].expression.value  += '0'">0</button>
+            <button type="button" onclick="event.preventDefault(); document.forms[0].expression.value  = document.forms[0].expression.value.slice(0, -1)">←</button>
+            <button type="button" onclick="appendSign(event, '/')">/</button>
+        </div>
+        <div>
+            <button type="submit" id="equal-sign">=</button>
+        </div>
+    </form>
+</body>
+
