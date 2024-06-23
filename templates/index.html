@@ -42,6 +42,12 @@
     }
     function validateExpression(event) {
     var expression = document.forms[0].expression.value;
+    // Check for non-numeric/non-operator characters
+    if (/[^0-9+\-*/().]/.test(expression)) {
+        alert("Only numbers, parentheses, and operators are allowed.");
+        event.preventDefault();
+        return false;
+    }
     if (expression.length === 0) {
         alert("The expression cannot be empty.");
         event.preventDefault();
